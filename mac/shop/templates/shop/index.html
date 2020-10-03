@@ -87,6 +87,15 @@ padding-right: 0;
 {% endblock %}
 {% block js %}
 <script>
+     {% if Account %}
+    alert('Your Account Has been created succesfully');
+    document.location='/shop'
+    {% endif %}
+    {% if account %}
+    alert("Login Succesfully")
+    document.location='/shop'
+    {% endif %}
+
 // Find out the cart items from localStorage
 if (localStorage.getItem('cart') == null) {
     var cart = {};

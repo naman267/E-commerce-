@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login,logout
+from django.contrib import messages
 from .models import Product,Contact,Order,OrderUpdate
 from math import ceil
 import json
+from django.shortcuts import redirect
 # Create your views here.
 def index(request):
 
@@ -102,6 +106,7 @@ def checkout(request):
         update.save()
         id=order.order_id
         thank=True
+        print(items_json)
         return render(request, "shop/checkout.html", {'thank': thank , 'id' : id  })
     return render(request,"shop/checkout.html")
 
@@ -110,9 +115,68 @@ def buy(request,myid):
     product = Product.objects.filter(id=myid)
     print(product)
     params={"product":product[0]}
+    if request.method == 'POST':
+        items_json=request.POST.get('itemsJson','')
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
+        address = request.POST.get('address1', '')+" "+request.POST.get('address2', '')
+
+        phone = request.POST.get('phone', '')
+        city = request.POST.get('city', '')
+        state = request.POST.get('state', '')
+        zip_code = request.POST.get('zip_code', '')
+        order = Order(item_json=items_json,name=name, email=email, phone=phone, address=address,city=city,state=state,zip_code=zip_code)
+        order.save()
+        update=OrderUpdate(order_id=order.order_id,update_desc="Order has been Placed")
+        update.save()
+        id=order.order_id
+        thank=True
+        return render(request, "shop/buy.html", {'thank': thank , 'id' : id  })
     return render(request, "shop/buy.html" ,params)
 
 
 
+def handlelogin(request):
+    if request.method=='POST':
+        username=request.POST['Username']
+        password=request.POST['passwordlogin']
+        user=authenticate(username=username,password=password)
+        if user is not None:
+            login(request,user)
+            messages.success(request,'Login Succesfully')
+            account=True
+            return render(request, "shop/index.html",{"account":account})
+        else:
+            account=False
+            return render(request,"shop/login.html",{"account":account})
+    account=True        
+    return render(request,"shop/login.html",{"account":account})
+
+def handlesignup(request):
+    if request.method=='POST':
+        username=request.POST['username']
+        fname=request.POST['fname']
+        lname=request.POST['lname']
+        phone=request.POST['phone']
+        email=request.POST['email']
+        password=request.POST['password']
+        myuser=User.objects.create_user(username,email,password)
+        myuser.first_name=fname
+        myuser.last_name=lname
+        myuser.phone=phone
+        myuser.save()
+        messages.success(request,"Account Created")
+        success=True
+        return render(request,"shop/index.html",{"Account":success})
+    return render(request,"shop/signup.html")
 
 
+
+
+def handlelogout(request):
+    if request.method=='POST':
+        logout(request)
+        logoutt=True
+        return render(request,"shop/login.html",{"logout":logoutt});
+
+    return Httpresponse("404 NOT FOUND")    
