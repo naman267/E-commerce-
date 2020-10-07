@@ -24,6 +24,9 @@
   
 
 }
+.contain{
+  margin-left:100px;
+}
 
     </style>
   </head>
@@ -33,22 +36,23 @@
      
    <h2>Welcome to My Awesome Cart </h2>
     <h5>Login/Signup to Continue</h5>
-   <div class="containerr row align-items-center">
+   <div class="containerr">
 
     <form method="post" action="/shop/login" class="login ">{% csrf_token %}
     
   <div class="form-group">
     <label for="Username">Username</label>
     <input type="name" class="form-control" id="Username" name="Username" placeholder="Enter Your Username" aria-describedby="emailHelp">
-    <small id="emailHelp"  class="form-text text-muted">We'll never share your email with anyone else.</small>
+    <small id="emailHelp"  class="form-text text-muted">We'll never share your username with anyone else.</small>
   </div>
   <div class="form-group">
     <label for="passwordlogin">Password</label>
     <input type="password" placeholder="Enter your password" class="form-control" id="passwordlogin" name="passwordlogin">
 
   
-  <button type="submit" class="btn btn-primary my-4">Submit</button>
- <a href="/shop/signup"> <button  type="button" class="btn btn-primary my-4">Signup</button></a>
+  <button type="submit" class="btn contain btn-primary my-4">Login</button></div>
+  Dont have an account?
+ <a href="/shop/signup"> Signup</a>
 </form>
 </div>
 </div>
@@ -66,7 +70,7 @@
   <script>
     {% if logout%}
     alert("Logout succesfully ")
-    document.location="/shop/login"
+    document.location="/"
     {% endif %}
     {% if not account%}
     alert("Login Failed Try Again ")

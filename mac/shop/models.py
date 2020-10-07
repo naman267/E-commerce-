@@ -1,5 +1,7 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 # Create your models here.
 class Product(models.Model):
     product_id=models.AutoField
@@ -24,6 +26,7 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
 class Order(models.Model):
     order_id=models.AutoField(primary_key=True)
     item_json=models.CharField(max_length=5000)
@@ -37,6 +40,17 @@ class Order(models.Model):
 
     def __str(self):
         return self.name
+
+class Profile(models.Model):
+    user=models.OneToOneField(User,on_delete=models.CASCADE)
+    phone=models.CharField(max_length=111,default='')
+    cart_json=models.CharField(max_length=5000)
+    
+
+    def __str(self):
+        return self.user.username
+
+
 
 class OrderUpdate(models.Model):
     update_id= models.AutoField(primary_key=True)

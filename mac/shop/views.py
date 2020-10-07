@@ -3,11 +3,12 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
-from .models import Product,Contact,Order,OrderUpdate
+from .models import Product,Contact,Order,OrderUpdate,Profile
 from math import ceil
 import json
 from django.shortcuts import redirect
 # Create your views here.
+Username=""
 def index(request):
 
     catprods=Product.objects.values('category','id')
@@ -141,11 +142,16 @@ def handlelogin(request):
         username=request.POST['Username']
         password=request.POST['passwordlogin']
         user=authenticate(username=username,password=password)
+        
+        print(user)
         if user is not None:
             login(request,user)
+            user=Profile.objects.get(user=request.user)
+            cart=user.cart_json
             messages.success(request,'Login Succesfully')
             account=True
-            return render(request, "shop/index.html",{"account":account})
+
+            return render(request, "shop/index.html",{"account":account,"username":user,"cart":cart})
         else:
             account=False
             return render(request,"shop/login.html",{"account":account})
@@ -160,14 +166,21 @@ def handlesignup(request):
         phone=request.POST['phone']
         email=request.POST['email']
         password=request.POST['password']
-        myuser=User.objects.create_user(username,email,password)
-        myuser.first_name=fname
-        myuser.last_name=lname
-        myuser.phone=phone
-        myuser.save()
-        messages.success(request,"Account Created")
-        success=True
-        return render(request,"shop/index.html",{"Account":success})
+        cart={}
+        cart=json.dumps(cart)
+        try:
+            
+            myuser=User.objects.create_user(username,email,password)
+            profileuser=Profile(phone=phone,cart_json=cart,user=myuser)
+            profileuser.save()
+            
+
+            messages.success(request,"Account Created")
+            success=True
+            return render(request,"shop/index.html",{"Account":success})
+        
+        except:
+            return render(request,"shop/signup.html",{"Account":True})
     return render(request,"shop/signup.html")
 
 
@@ -175,8 +188,18 @@ def handlesignup(request):
 
 def handlelogout(request):
     if request.method=='POST':
+        datas=Profile.objects.get(user=request.user)
+       
+        cartJson=request.POST.get('cartJson','')
+        print("yes",datas.phone)       
+        datas.cart_json=cartJson
+        print(datas.cart_json)
+        datas.save()
+        
+        print(cartJson)
         logout(request)
         logoutt=True
         return render(request,"shop/login.html",{"logout":logoutt});
+    
 
     return Httpresponse("404 NOT FOUND")    

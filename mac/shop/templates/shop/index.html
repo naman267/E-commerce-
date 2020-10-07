@@ -36,6 +36,7 @@ padding-left: 0,
 padding-right: 0;
 }
 {% endblock %}
+
 {% block body %}
 {% load static %}
 <div class="container">
@@ -87,7 +88,13 @@ padding-right: 0;
 {% endblock %}
 {% block js %}
 <script>
+   function savecart()
+    {
+     $('#cartJson').val(JSON.stringify(cart))
+      
+    }
      {% if Account %}
+    
     alert('Your Account Has been created succesfully');
     document.location='/shop'
     {% endif %}
