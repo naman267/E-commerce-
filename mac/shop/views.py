@@ -8,19 +8,23 @@ from math import ceil
 import json
 from django.shortcuts import redirect
 # Create your views here.
-Username=""
+
 def index(request):
 
     catprods=Product.objects.values('category','id')
     cats={item["category"] for item in catprods}
     allProds=[]
+    user=Profile.objects.get(user=request.user)
+    cart=user.cart_json
+    recommend=user.recommendedProduct
+    print("ho",cart)
     for cat in cats:
         prod=Product.objects.filter(category=cat)
         n = len(prod)
         nslides = n // 4 + ceil((n / 4) - (n // 4))
         allProds.append([prod,range(1,nslides),nslides])
 
-    params={'allProds':allProds}
+    params={'allProds':allProds,'cart_json':cart,'recommend':recommend}
     return render(request,"shop/index.html",params)
 def about(request):
     return render(request,"shop/about.html")
@@ -43,15 +47,19 @@ def tracker(request):
      try:
          print(Order)
          order=Order.objects.filter(order_id=orderId,email=email)
-         print("!",order)
+         print(order[0])
          if (len(order)>0):
-
+             print("order",order)   
              update=OrderUpdate.objects.filter(order_id=orderId)
              updates=[]
              for item in update:
                  updates.append({'text':item.update_desc,'time':item.timestamp})
              print("yes",updates)    
-             response=json.dumps({"status":"success","updates":updates,"itemsjson":order[0].item_json},default=str)
+             city=order[0].city
+             print("city",city)
+             if city=='delhi':
+                city='Delhi'
+             response=json.dumps({"status":"success","updates":updates,"itemsjson":order[0].item_json,'city':city},default=str)
              return HttpResponse(response)
          else:
              return HttpResponse('{"status":"no item"}')
@@ -146,12 +154,13 @@ def handlelogin(request):
         print(user)
         if user is not None:
             login(request,user)
-            user=Profile.objects.get(user=request.user)
-            cart=user.cart_json
+            #user=Profile.objects.get(user=request.user)
+            #cart=user.cart_json
+            #print("ho",cart)*/
             messages.success(request,'Login Succesfully')
             account=True
 
-            return render(request, "shop/index.html",{"account":account,"username":user,"cart":cart})
+            return render(request, "shop/index.html",{"account":account,"username":user})
         else:
             account=False
             return render(request,"shop/login.html",{"account":account})
@@ -168,12 +177,16 @@ def handlesignup(request):
         password=request.POST['password']
         cart={}
         cart=json.dumps(cart)
+        #'pr2":[3,"John Player Tshirt (L/M/XXL)"],"pr6":[3,"Lancer Shoes"],"pr7":[4,"Levis Jeans"]}'
+       # recommend={"pr2":[1,"John Player Tshirt"],"pr6":[1,"Lancer Shoes"],"pr7":[1,"Levis Jeans"]}
+        recommend={"pr2":[1,"shop/images/john_player_tshirt.jpg","John Player Tshirt (L/M/XXL)",2],"pr6":[1,"shop/images/lancer_shoes.jpg","Lancer Shoes",6],"pr7":[1,"shop/images/levis_jeans.jpg","Levis Jeans",7]}
+        recommend=json.dumps(recommend)
         try:
             
             myuser=User.objects.create_user(username,email,password)
-            profileuser=Profile(phone=phone,cart_json=cart,user=myuser)
+            profileuser=Profile(phone=phone,cart_json=cart,user=myuser,recommendedProduct=recommend)
             profileuser.save()
-            
+            login(request,myuser)
 
             messages.success(request,"Account Created")
             success=True
@@ -190,10 +203,13 @@ def handlelogout(request):
     if request.method=='POST':
         datas=Profile.objects.get(user=request.user)
        
-        cartJson=request.POST.get('cartJson','')
+        cartJson=request.POST.get('cartJson','{}')
+        recommend=request.POST.get('recommend','{}')
+
         print("yes",datas.phone)       
         datas.cart_json=cartJson
-        print(datas.cart_json)
+        datas.recommendedProduct=recommend
+        
         datas.save()
         
         print(cartJson)

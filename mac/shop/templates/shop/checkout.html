@@ -56,14 +56,31 @@
 {% endblock %}
 {% block js %}
 <script>
+    
+recommend=JSON.parse(localStorage.getItem('recommend'));
+     function savecart()
+    {if(cart==null)
+        {
+            cart={};
+        }
+     $('#cartJson').val(JSON.stringify(cart))
+     $('#recommend').val(JSON.stringify(recommend))
+     localStorage.clear()
+      
+    }
 
-if (localStorage.getItem('cart') == null) {
+
+
+/*if (localStorage.getItem('cart') == null) {
     var cart = {};
 } else {
     cart = JSON.parse(localStorage.getItem('cart'));
     //console.log(cart)
     updateCart(cart);
-}
+}*/
+  cart = JSON.parse(localStorage.getItem('cart'));
+    //console.log(cart)
+  updateCart(cart);
 
 //console.log(cart);
 

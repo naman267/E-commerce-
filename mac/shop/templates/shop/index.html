@@ -39,7 +39,8 @@ padding-right: 0;
 
 {% block body %}
 {% load static %}
-<div class="container">
+<div id="{{recommend}}"class="container recommend" >
+    <input type="hidden" id="{{cart_json}}" class="hidden">
     <!--Slideshow starts here -->
     {% for product, range, nSlides in allProds %}
     <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
@@ -88,29 +89,65 @@ padding-right: 0;
 {% endblock %}
 {% block js %}
 <script>
-   function savecart()
-    {
-     $('#cartJson').val(JSON.stringify(cart))
-      
-    }
-     {% if Account %}
+    {% if Account %}
     
     alert('Your Account Has been created succesfully');
-    document.location='/shop'
+    document.location='/shop/'
     {% endif %}
     {% if account %}
     alert("Login Succesfully")
-    document.location='/shop'
+    document.location='/shop/'
     {% endif %}
 
+
+
+
+    temp = document.getElementsByClassName('hidden')[0].id;
+    temp2=document.getElementsByClassName('recommend')[0].id;
+    console.log(typeof(temp2),temp2)
+   
+  if((localStorage.getItem('recommend')==null) || (localStorage.getItem('recommend')==""))
+  {
+    localStorage.setItem('recommend',temp2); 
+  }
+   
+   
+   if((localStorage.getItem('cart')==null) || (localStorage.getItem('cart')==""))
+   {
+      localStorage.setItem('cart',temp);
+   }
+   
+    
+    
+    
+    recommend=JSON.parse(localStorage.getItem('recommend'))
+    console.log("recommed items",recommend)
+    //temp=JSON.parse(temp)
+    //temp=temp.replace(/(&quot\;)/g,"\"")
+
+   function savecart()
+    {if(cart==null)
+        {
+            cart={};
+        }
+     $('#cartJson').val(JSON.stringify(cart))
+     $('#recommend').val(JSON.stringify(recommend))
+     localStorage.clear()
+      
+    }
+     
+  cart=JSON.parse(localStorage.getItem('cart'));
+  console.log("hi",cart)
 // Find out the cart items from localStorage
-if (localStorage.getItem('cart') == null) {
+/*if (localStorage.getItem('cart') == null) {
     var cart = {};
 } else {
     cart = JSON.parse(localStorage.getItem('cart'));
     //console.log(cart)
     updateCart(cart);
-}
+}*/
+updateCart(cart)
+
 // If the add to cart button is clicked, add/increment the item
 //$('.cart').click(function() {
     $('.divpr').on('click', 'button.cart', function(){

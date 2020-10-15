@@ -44,8 +44,9 @@ class Order(models.Model):
 class Profile(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     phone=models.CharField(max_length=111,default='')
-    cart_json=models.CharField(max_length=5000)
-    
+    cart_json=models.CharField(max_length=5000,default='{}')
+    recentSearch=models.CharField(max_length=5000,default="{}")
+    recommendedProduct=models.CharField(max_length=5000,default="{}")
 
     def __str(self):
         return self.user.username
@@ -60,3 +61,6 @@ class OrderUpdate(models.Model):
 
     def __str__(self):
         return self.update_desc[0:7] + "..."  
+
+
+

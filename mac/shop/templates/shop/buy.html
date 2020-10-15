@@ -56,12 +56,31 @@
 {% endblock %}
 {% block js %}
 <script>
-  if (localStorage.getItem('cart') == null) {
+recommend=JSON.parse(localStorage.getItem('recommend'));
+    function savecart()
+    {if(cart==null)
+        {
+            cart={};
+        }
+     $('#cartJson').val(JSON.stringify(cart))
+      $('#recommend').val(JSON.stringify(recommend))
+     localStorage.clear()
+      
+    }
+
+
+
+ /* if (localStorage.getItem('cart') == null) {
     var cart = {};
 } else {
     cart = JSON.parse(localStorage.getItem('cart'));
     
-} idd=document.getElementsByClassName('list-group')[0].id;
+} */
+cart=JSON.parse(localStorage.getItem('cart'));
+
+
+
+idd=document.getElementsByClassName('list-group')[0].id;
 console.log(idd)
   name=document.getElementsByClassName('items')[0].id;
   name=name.substring(0,name.length-1);
