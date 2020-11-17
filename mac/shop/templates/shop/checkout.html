@@ -1,5 +1,16 @@
 {% extends 'shop/basic.html' %}
 {% block title %}Tracker page {% endblock %}
+{% block css %}
+{% load static %}
+    body{
+       background:radial-gradient(#fff,#ffd6d6);
+    }
+.scrollable-menu {
+height: auto;
+max-height: 200px;
+overflow-x: hidden;
+}
+{% endblock %}
 {% block body %}
 <div class="container my-2">
     <div class="col">
@@ -33,8 +44,52 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="inputCity">City</label>
-                    <input type="text" class="form-control" id="city" name="city">
+                </br>
+                   <label for="city">Choose a city:</label>
+                    <select name="city" id="city">
+                       <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            City
+                        </button>-->
+                        <!--<div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">-->
+                            <option >srinagar</option>
+                            <option >jammu</option>
+                            <option >shimla</option>
+                            <option >dehradun</option>
+                            <option >haridwar</option>
+                            <option >roorkee</option>
+                            <option >chandigarh</option>
+                            <option >jalandhar</option>
+                            <option >amritsar</option>
+                            <option >ludhiana</option>
+                            <option >karnal</option>
+                            <option >muzzafarnagar</option>
+                            <option >meerut</option>
+                            <option >delhi</option>
+                            <option >alwar</option>
+                            <option >bikaner</option>
+                            <option >jaipur</option>
+                            <option >gandhinagar</option>
+                            <option >udaipur</option>
+                            <option >kota</option>
+                            <option >ahemdabad</option>
+                            <option >mumbai</option>
+                            <option >panaji</option>
+                            <option >bengaluru</option>
+                            <option >kochi</option>
+                            <option >chennai</option>
+                            <option >vishakhapatnam</option>
+                            <option >bhubaneshwar</option>
+                            <option >bhopal</option>
+                            <option >nagpur</option>
+                            <option >nanded</option>
+                            <option >kolkata</option>
+                            <option >patna</option>
+                            <option >agra</option>
+                            <option >lucknow</option>
+                        </select>
+                        
+                    </div>
+                  <!--  <input type="hidden" class="form-control" id="city" name="city">-->
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputState">State</label>
@@ -49,6 +104,7 @@
                     <input type="tel" class="form-control" id="phone" name="phone">
                 </div>
             </div>
+        </br>
             <button type="submit" class="btn btn-primary">Place Order</button>
         </form>
     </div>
@@ -56,18 +112,18 @@
 {% endblock %}
 {% block js %}
 <script>
-    
-recommend=JSON.parse(localStorage.getItem('recommend'));
-     function savecart()
-    {if(cart==null)
-        {
-            cart={};
-        }
-     $('#cartJson').val(JSON.stringify(cart))
-     $('#recommend').val(JSON.stringify(recommend))
-     localStorage.clear()
-      
+
+recommend = JSON.parse(localStorage.getItem('recommend'));
+
+function savecart() {
+    if (cart == null) {
+        cart = {};
     }
+    $('#cartJson').val(JSON.stringify(cart))
+    $('#recommend').val(JSON.stringify(recommend))
+    localStorage.clear()
+
+}
 
 
 
@@ -78,42 +134,52 @@ recommend=JSON.parse(localStorage.getItem('recommend'));
     //console.log(cart)
     updateCart(cart);
 }*/
-  cart = JSON.parse(localStorage.getItem('cart'));
-    //console.log(cart)
-  updateCart(cart);
+cart = JSON.parse(localStorage.getItem('cart'));
+//console.log(cart)
+updateCart(cart);
 
 //console.log(cart);
 
-var sum=0;
+var sum = 0;
 
 if ($.isEmptyObject(cart)) {
     myStr = `<p>Your cart is empty Please Add some items in your Cart</p>`
     $('.items').append(myStr);
 } else {
-
+        var finalprice=0;
     for (item in cart) {
         let name = cart[item][1];
         let qty = cart[item][0];
-        sum=sum+qty;
+        finalprice=cart[item][2]+finalprice;
+        sum = sum + qty;
         myStr = `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${name}
-                    <span class="badge badge-primary badge-pill">${qty}</span>
+                    ${name}(${qty})
+                  
+                    <option class="badge badge-primary badge-pill">${cart[item][2]}</option>
                 </li>`
         $('.items').append(myStr);
     }
+     var strr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    Total(${sum})
+                    <span class="badge badge-primary badge-pill">${finalprice}</span>
+
+                </li>`
+        $('.items').append(strr);
 }
 document.getElementById('cart').innerHTML = sum;
 $('#itemJson').val(JSON.stringify(cart))
-{% if thank %}
+ {% if thank %}
+clearCart();
 alert('Thanks For ordering with us Your order id is {{id}} use it to track your order with our tracker ');
-localStorage.clear();
-document.location="/shop";
+
+document.location = "/shop"; 
 {% endif %}
 
 
 //Add Popover to cart
 $('#popcart').popover();
 updatePopover(cart);
+
 function updatePopover(cart) {
     //console.log('We are inside updatePopover');
     var popStr = "";
@@ -129,17 +195,19 @@ function updatePopover(cart) {
     document.getElementById('popcart').setAttribute('data-content', popStr);
     $('#popcart').popover('show');
 }
+
 function clearCart() {
     cart = JSON.parse(localStorage.getItem('cart'));
-  
-    localStorage.clear();
+
+    localStorage.removeItem('cart');
     cart = {};
     updateCart(cart);
 }
+
 function updateCart(cart) {
     var sum = 0;
     for (var item in cart) {
-      //  console.log(item)
+        //  console.log(item)
         sum = sum + cart[item][0];
     }
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -147,6 +215,5 @@ function updateCart(cart) {
     //console.log(cart);
     updatePopover(cart);
 }
-
 </script>
 {% endblock %}

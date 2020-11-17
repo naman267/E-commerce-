@@ -92,27 +92,20 @@ let V=cities.length;
 
 for(let i=0;i<V;i++)
 {
-    dict[cities[i]]=i
+	dict[cities[i]]=i
 }
 ////console.log(dict);
 
 
 var graph=creategraph(cities);
-//console.log(graph);
+////console.log(graph);
 let distance1 = djikstra(graph,V,13);//delhi
 let distance2 = djikstra(graph,V,21);//mumbai
 let distance3 = djikstra(graph,V,31);//kolkata
 ////console.log(distances);
 var dest=dict[city];
-var complete=false;
-console.log(dest)
-console.log(city)
-if((dest==13) || (dest==21) || (dest==31))
-{complete=true;
-}
 
-if(!complete)
-{
+
 let path=[];
 let finalsource="source";
 if(distance1[dest][0]<=distance2[dest][0] && distance1[dest][0]<=distance3[dest][0] )
@@ -127,7 +120,7 @@ else
 {
     finalsource="kolkata";
 }
-let parent=distance1[dest][1];
+let parent=distances[dest][1];
 if(finalsource=="delhi")
 {
 parent=distance1[dest][1];
@@ -156,9 +149,9 @@ else
 
 while(dest!=-1)
 {
-    path.push(dest);
+	path.push(dest);
     if(finalsource=="delhi")
-    {dest=distance1[dest][1];}
+	{dest=distance1[dest][1];}
     else if(finalsource=="mumbai")
     {
         dest=distance2[dest][1];
@@ -168,7 +161,7 @@ while(dest!=-1)
         dest=distance3[dest][1];
     }
 }
-console.log("path",path);
+////console.log("path",path);
 path=path.reverse();
 
 create();
@@ -238,16 +231,15 @@ function create()
 
             // Adding the edge between node and neighbour
             let temp=0;
-            for(let j=0;j<graph[path[i]].length;j++)
+            for(let j=0;j<adjlist[dict[path[i]]].length;j++)
             {
-                if(graph[path[i]][j][0]==path[i+1])
+                if(adjlist[dict[path[i]]][j][0]==dict[path[i+1]])
                 {
                     temp=j;break;
                 }
             }
-            console.log("temp",temp)
             //console.log("temp--",temp)
-            edges.push({ from: i, to: i+1, color: 'orange', label: String(graph[path[i]][temp][1] ) });
+            edges.push({ from: i, to: i+1, color: 'orange', label: String(adjlist[dict[path[i]]][temp][1] ) });
             
         }
 
@@ -268,7 +260,7 @@ function create()
     {
         places.push(cities[path[i]]);
     }
-    console.log("places",places);
+   // //console.log("places",places);
 
    var table=` <table style="width:100%">
     <tr>  
@@ -278,21 +270,10 @@ function create()
     </tr>`;
      for(var i=0;i<places.length-1;i++)
      {
-
-        let tempp=0;
-            for(let j=0;j<graph[path[i]].length;j++)
-            {
-                if(graph[path[i]][j][0]==path[i+1])
-                {
-                    tempp=j;break;
-                }
-            }
-            console.log("temp",tempp)
-
         var temp=`<tr>
           <td>${places[i]}</td>
           <td>${places[i+1]}</td>
-          <td>${graph[path[i]][tempp][1]}Km</td>
+          <td>Distance</td>
         </tr>`;
         table=table+temp;
      }
@@ -300,11 +281,4 @@ function create()
      document.getElementById('table').innerHTML=table; 
 
 };
-}
-else
-{
-    var table=`Your order is already at nearby center `;
-    document.getElementById('table').innerHTML=table; 
-}
-
 };

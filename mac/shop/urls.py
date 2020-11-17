@@ -2,16 +2,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("",views.index,name='ShopHome'),
-    path("about/",views.about,name='about'),
-    path("contact/",views.contact,name='contact'),
-    path("search",views.search,name='search'),
-    path("tracker",views.tracker,name='tracker'),
-    path("products/<int:myid>",views.prodView,name='productview'),
-    path("checkout",views.checkout,name='checkout'),
-    path("buy/<int:myid>",views.buy,name='buy'),
-    path("login",views.handlelogin,name='login'),
-    path("signup",views.handlesignup,name='signup'),
-    path("logout",views.handlelogout,name='logout')
+    path("",views.Index.as_view(),name='ShopHome'),
+    path("about/",views.About.as_view(),name='about'),
+    path("contact/",views.Ccontact.as_view(),name='contact'),
+    path("search",views.Search.as_view(),name='search'),
+    path("tracker",views.Tracker.as_view(),name='tracker'),
+    path("products/<int:myid>",views.Prodview.as_view(),name='productview'),
+    path("checkout",views.Checkout.as_view(),name='checkout'),
+    path("buy/<int:myid>",views.Buy.as_view(),name='buy'),
+    path("login",views.Handlelogin.as_view(),name='login'),
+    path("signup",views.Handlesignup.as_view(),name='signup'),
+    path("logout",views.Handlelogout.as_view(),name='logout'),
+    path("Donate",views.Donate.as_view(),name='donate')
 ]
 

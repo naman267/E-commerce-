@@ -1,17 +1,25 @@
 {% extends 'shop/basic.html' %}
 {% block title %}Tracker page {% endblock %}
 {% block css%}
+body{
+    
+  background:radial-gradient(#fff,#ffd6d6);
+}
 table, th, td {
 border: 1px solid black;
 border-collapse: collapse;
 #items{
 zoom:125%;
 }
+#graph{
+    background-color:grey;
+}
 }
 {% endblock %}
 {% block body %}
 {% load static %}
 <div class="container my-2">
+
     <div class="col">
         <h2>My Awesome Cart- Enter Your Order Id and Email to Track Your Order</h2>
         <form action="#" method="post" id="trackerForm">{% csrf_token %}
@@ -35,7 +43,7 @@ zoom:125%;
                 Enter Email and Id to track your order
             </ul>
         </div>
-        <h2>Table</h2>
+        
         <div id="table">
         </div>
         <h2>Your Order Details</h2>
@@ -92,7 +100,7 @@ function updatePopover(cart) {
 function clearCart() {
     cart = JSON.parse(localStorage.getItem('cart'));
     
-    localStorage.clear();
+    localStorage.removeItem('cart');
     cart = {};
     localStorage.setItem('cart',JSON.stringify(cart));
     updatePopover(cart);
@@ -136,21 +144,33 @@ $('#trackerForm').submit(function(event) {
            // console.log(updates)
             var city=data["city"];
             console.log(data["city"]);
+            console.log("tracker",city);
+            city=city.toLowerCase();
             track(city);
             
      
-     var cart=JSON.parse(data["itemsjson"])
+ 
+        var cart=JSON.parse(data["itemsjson"])
       console.log(cart)
+      let finalprice=0;
+      let sum=0;
      for (var item in cart) {
         let name = cart[item][1];
         let qty = cart[item][0];
+        sum=sum+qty
+        finalprice=finalprice+cart[item][2];
 
        var  myStr = `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${name}
-                    <span class="badge badge-primary badge-pill">${qty}</span>
+                    ${name}(${qty})
+                    <span class="badge badge-primary badge-pill">${cart[item][2]}</span>
                 </li>`
         $('#citems').append(myStr);
     }
+    var strr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    Total(${sum})
+                    <span class="badge badge-primary badge-pill">${finalprice}</span>
+                </li>`
+        $('#citems').append(strr);
 }
     
     else{

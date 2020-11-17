@@ -1,5 +1,10 @@
 {% extends 'shop/basic.html' %}
-{% block title %}Tracker page {% endblock %}
+{% block title %}Buy page {% endblock %}
+{% block css %}
+ background:radial-gradient(#fff,#ffd6d6);
+
+{% endblock %}
+
 {% block body %}
 <div class="container my-2">
     <div class="col">
@@ -134,7 +139,7 @@ function updatePopover(cart) {
 function clearCart() {
     cart = JSON.parse(localStorage.getItem('cart'));
     
-    localStorage.clear();
+    localStorage.removeItem('cart');
     cart = {};
     updateCart(cart);
 }

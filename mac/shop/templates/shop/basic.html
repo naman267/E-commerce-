@@ -9,7 +9,55 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>{% block title %} {% endblock %}</title>
     <style>
+        .navbar{
+            padding-right:0px;
+        }
+        .labe{
+            width:120px;
+        }
+        li{height:30px;
+
+        }
+    .request{
+       height:30px;
+
+       margin-top:7px;
+       margin-left:50px;
+       margin-right:45px;
+       margin-left:45px;
+       margin-right:5px;
+    }
+    .reques{margin:0px;
+     color:white;
+    }
+    .search{
+     width:200px; 
+    }
+    .navbar{
+    height:80px;
+    }
+    .labe{
+      margin-top:7px;
+      color:white;
+    }
+    #myform{
+    width:200px;
+    display:flex;
+    }
+    #category{
+      height:25px;
+      margin-top:5px;
+    }
+    li{
+       margin-right:20px;  
+    }
         {% block css %} {% endblock %}
+    
+    
+    
+    
+    
+    
   
    </style>
    <script src="https://kit.fontawesome.com/5548f5ed00.js" crossorigin="anonymous"></script>
@@ -21,12 +69,12 @@
 <body>
     {% load static %}
     <nav class=" navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">My Awesome Cart</a>
+        <a class="navbar-brand" href="#">MY CART</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            <ul id="ul" class="navbar-nav">
                 <li class="nav-item active">
                     <a class="nav-link" href="/shop">Home <span class="sr-only">(current)</span></a>
                 </li>
@@ -34,37 +82,67 @@
                     <a class="nav-link" href="/shop/contact">Contact Us</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="/shop/about">Abot Us</a>
+                    <a class="nav-link" href="/shop/about">About Us</a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="/shop/tracker">Tracker</a>
                 </li>
-                <li >
-                    {% block username %}{% endblock %}
+                 <li class="nav-item ">
+                    <a class="nav-link" href="/shop/Donate">Donate</a>
                 </li>
-            </ul>
+                <li>
+                 <form id="myform"action="/shop/search" method="get">
+                 <label class="labe"for="category">Choose By Categories:</label>
+                    <select name="search" id="category" onchange="this.form.submit();">
+                    <optgroup label="Electronics">
+                    <option class="1"><a href="/shop/search/search=Television">Television</a></option>
+                    <option class="1"><a href="/shop/search/search=Mobiles">Mobiles</a></option>
+                    <optgroup label="Fashion">
+                    <option class="1"><a href="/shop/search/search=Cloths">Clothes</a></option>
+                    <option class="1"><a href="/shop/search/search=Accessories">Accessories</a></option>
+                    <optgroup label="Beauty/Accessories">
+                    <option class="1"><a href="/shop/search/search=Watches">Watches</a></option>  
+                    <option class="1"><a href="/shop/search/search=Jewellery">Jewellery</a></option>    
+                    <optgroup label="Home Decor">
+                    <option class="1"><a href="/shop/search/search=Furniture">Furniture</a></option> 
+                    <option class="1"><a href="/shop/search/search=Kitchen">Kitchen Accessories</a></option>
+                    <optgroup label="Sports">
+                    <option class="1"><a href="/shop/search/search=Gym">Gym Equipments</a></option>
+                    <option class="1"><a href="/shop/search/search=Accesories">Accessories</a></option>    
+              
+              </select>
+          </form>
+      </li>
+              
+
+              <li class="nav-item request ">
+                  <b class="reques"> Welcome {{request.user}}</b>
+                </li>
+            
             <form method='get' action='/shop/search' class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search"
+                <input  class=" search form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search"
                 id="search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
             <form method="post" action="/shop/logout">{% csrf_token %}
-              <button class="btn btn-outline-success my-2 my-sm-0" onclick="savecart()" type="submit">Logout</button>
+              <button class="btn btn-outline-success mx-1 my-2 my-sm-0" onclick="savecart()" type="submit">Logout</button>
               <input type="hidden" name="cartJson" id="cartJson">
               <input type="hidden" name="recommend" id="recommend">
             
           </form>
-            <button type="button" class="mx-2 btn btn-secondary" id="popcart" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Vivamus
+            <button type="button" class="mx-3 btn btn-secondary" id="popcart" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Vivamus
 sagittis lacus vel augue laoreet rutrum faucibus.">
                 Cart(<span id="cart">0</span>)
             </button>
         </div>
+    </ul>
     </nav>
     {% block body %} {% endblock %}
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
     {% block js %} {% endblock %}
+  
 </body>
 
 </html>

@@ -9,7 +9,7 @@ class Product(models.Model):
     category=models.CharField(max_length=50,default="")
     sub_category=models.CharField(max_length=50,default="")
     price=models.IntegerField(default=50)
-    desc=models.CharField(max_length=300)
+    desc=models.CharField(max_length=3000)
     pub_date=models.DateField()
     image=models.ImageField(upload_to="shop/images",default="")
 
@@ -63,4 +63,11 @@ class OrderUpdate(models.Model):
         return self.update_desc[0:7] + "..."  
 
 
-
+class Donation(models.Model):
+    name=models.CharField(max_length=500)
+    quantity=models.IntegerField(max_length=10)
+    adderess=models.CharField(max_length=1000)
+    phone=models.CharField(max_length=11,default="")
+    
+    def __str__(self):
+        return self.name
