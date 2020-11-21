@@ -79,7 +79,7 @@ function djikstra(graph, V, src) {
                 dist[edge[0]][0] = dist[mn][0]+edge[1];
                 dist[edge[0]][1] = mn;
             }
-        }
+        } 
     }
 
     return dist;
