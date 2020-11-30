@@ -98,7 +98,7 @@ var name=document.getElementById('namepr').innerHTML
 
 
   for(var item in recommend)
-  {var id=item[2];
+  {var id=item.slice(2,)
     heap.insert([recommend[item][0],recommend[item][1],recommend[item][2],id])
   }
   console.log("heap",heap);
